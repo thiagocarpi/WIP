@@ -1,0 +1,19 @@
+﻿
+#canvas-wrapper{
+	border: 1px dashed #000000;
+}
+
+#canvas-wrapper {
+	/*background-image:url(../images/map.png);*/
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	text-align:left;
+	overflow:hidden;
+}
+
+.navbar{
+	position: absolute;
+	width: 100%;
+}
