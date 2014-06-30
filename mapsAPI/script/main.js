@@ -6,154 +6,152 @@
 var w = window.screen.width;
 var h = window.screen.height;
 var poly;
+var line;
 var geodesic;
 var map;
 var clickcount = 0;
 var drawing = false;
-
+var points = [];
+var pos = [];
+var data = [];
 window.onload = function() {
-    var mapOptions = {
-      center: new google.maps.LatLng(-23.9549937, -46.3446748),
-      zoom: 14,
-      mapTypeId: google.maps.MapTypeId.ROADMAP
+  var mapOptions = {
+    center: new google.maps.LatLng(-23.9549937, -46.3446748),
+    zoom: 14,
+    mapTypeId: google.maps.MapTypeId.ROADMAP
   };
   map = new google.maps.Map(document.getElementById("map_canvas"),
     mapOptions);
+  drawAreas();
 
-  var polyOptions = {
-    strokeColor: '#FF0000',
+  var geodesicOptions = {
+    strokeColor: '#ff0000',
     strokeOpacity: 1.0,
-    strokeWeight: 3
-    }
-    poly = new google.maps.Polyline(polyOptions);
-    poly.setMap(map);
-    var geodesicOptions = {
-        strokeColor: '#CC0099',
-        strokeOpacity: 1.0,
-        strokeWeight: 3,
-        geodesic: true
-    }
-    geodesic = new google.maps.Polyline(geodesicOptions);
-    geodesic.setMap(map);
+    strokeWeight: 3,
+    geodesic: true
+  }
+  geodesic = new google.maps.Polyline(geodesicOptions);
+  geodesic.setMap(map);
 
   // Add a listener for the click event
-  google.maps.event.addListener(map, 'click', addLocation);
-
+  google.maps.event.addListener(map, 'mousedown', addLocation);
+  google.maps.event.addListener(map, 'mousemove', moveLocation);
 };
 
 function addLocation(event) {
-
-  clickcount++;
-  if (clickcount == 1) {
-    addOrigin(event);
-  }
-  if (clickcount > 2) {
-    addDestination(event);
-  }
-}
-
-function addOrigin(event) {
-   // alert("add");
-   drawing = true;
-  clearPaths();
-  var path = poly.getPath();
-  path.push(event.latLng);
-  var gPath = geodesic.getPath();
-  gPath.push(event.latLng);
-}
-
-function addDestination(event) {
-  var path = poly.getPath();
-  path.push(event.latLng);
-  var gPath = geodesic.getPath();
-  gPath.push(event.latLng);
-  adjustHeading();
-  clickcount = 0;
-}
-  
-function clearPaths() {
-  var path = poly.getPath();
-  while (path.getLength()) {
-    path.pop();
-  }
-  var gPath = geodesic.getPath();
-  while (gPath.getLength()) {
-    gPath.pop();
+  var x = event.latLng.lat();
+  var y = event.latLng.lng();  
+  if(points.length > 0 && drawing){
+    console.log("new point");
+    addPoint(x, y, false);
+  }else{
+    console.log("first point");
+    drawing = true;
+    addPoint(x, y, true);
   }
 }
 
-function adjustHeading() {
-  var path = poly.getPath();
-  var pathSize = path.getLength();
-  var heading = google.maps.geometry.spherical.computeHeading(path.getAt(0), path.getAt(pathSize - 1));
-  document.getElementById('heading').value = heading;
-  document.getElementById('origin').value = path.getAt(0).lat()
-      + "," + path.getAt(0).lng();
-  document.getElementById('destination').value = path.getAt(pathSize - 1).lat()
-      + "," + path.getAt(pathSize - 1).lng();
+function moveLocation(event){
+  if(drawing){
+    //var x = event.latLng.lat();
+    //var y = event.latLng.lng(); 
+    //var path = poly.getPath();
+   // var pathSize = path.getLength();
+    //newLatLng = new google.maps.LatLng(x,y);
+    //path.setAt(pathSize - 1, newLatLng);
+    //line.setMap(map);
+    //console.log(path.getAt(pathSize - 1).lat());
+  }
 }
+function initClick(event){
+  drawing = false;
+  pos.push(pos[0]);
+  line = new google.maps.Polygon({
+    path: pos,
+    strokeColor: '#FF0000',
+    strokeOpacity: 1.0,
+    strokeWeight: 2,
+    fillColor: '#FF0000',
+    fillOpacity: 0.35
+  });
+  var obj = {
+    'id':0,
+    'area':pos
+  };
+  line.objInfo = obj;
+  line.setMap(map);
+  //save data to file
+  data = pos;
+  console.log( JSON.stringify(data));
+  pos = [];
+  google.maps.event.addListener(line, 'mousedown', lineClick);
 
+  //console.log( " inicial" + " | " + pos);
+}
+function lineClick(event){
+  this.setOptions({fillColor:'#00ff00'});
+  console.log(this.objInfo);
+}
+function addPoint(x, y, click){
+  if(drawing){
+    var populationOptions = {
+      strokeColor: '#FF0000',
+      strokeOpacity: 0.8,
+      strokeWeight: 1,
+      fillColor: '#FF0000',
+      fillOpacity: 0.35,
+      map: map,
+      center: new google.maps.LatLng(x,y),
+      radius: 5,
+      clickable: (click) ? true : false
+    };
+    points.push([x,y]);
+    pos.push(new google.maps.LatLng(x,y));
+    cityCircle = new google.maps.Circle(populationOptions);
+    if(click){
+      google.maps.event.addListener(cityCircle, 'mousedown', initClick);
+    }
+  }
+}
+function hitStart(startX, startY, pX, pY, r){
+  console.log ( Math.sqrt((pX-startX)*(pX-startX) + (pY-startY)*(pY-startY)) +  " | "+ r/100000 )
+  return Math.sqrt((pX-startX)*(pX-startX) + (pY-startY)*(pY-startY)) > r/100 ;
+}
 function zoomOUT(){
-    console.log(stage.getScale().x);
-    var scale = stage.getScale().x - 0.1;
-    stage.setScale(scale);
-    stage.draw();
+  console.log(stage.getScale().x);
+  var scale = stage.getScale().x - 0.1;
+  stage.setScale(scale);
+  stage.draw();
 }
 function zoomIN(){
-   console.log(stage.getScale().x);
-   var scale = stage.getScale().x + 0.1;
-   stage.setScale(scale);
-   stage.draw();
+ console.log(stage.getScale().x);
+ var scale = stage.getScale().x + 0.1;
+ stage.setScale(scale);
+ stage.draw();
 }
-/*
-(function() {
 
-var win = $(window);
+function drawAreas(){
+  console.log("inicio");
+  var json = $.getJSON("data.json", function(json){
+    console.log(json.length);
+    var tempArray = [];
+    var length = 0;
+    for(var k in json) if(json.hasOwnProperty(k)) length++;
 
-win.resize(function() {
-    
-    var win_w = win.width(),
-        win_h = win.height(),
-        $bg    = $("#bg");
-
-    // Load narrowest background image based on 
-    // viewport width, but never load anything narrower 
-    // that what's already loaded if anything.
-    var available = [
-      1024, 1280, 1366,
-      1400, 1680, 1920,
-      2560, 3840, 4860
-    ];
-
-    var current = $bg.attr('src').match(/([0-9]+)/) ? RegExp.$1 : null;
-    
-    if (!current || ((current < win_w) && (current < available[available.length - 1]))) {
-      
-      var chosen = available[available.length - 1];
-      
-      for (var i=0; i<available.length; i++) {
-        if (available[i] >= win_w) {
-          chosen = available[i];
-          break;
-        }
-      }
-      
-      // Set the new image
-      $bg.attr('src', '/img/bg/' + chosen + '.jpg');
-      
-      // for testing...
-      // console.log('Chosen background: ' + chosen);
-      
-    }
-
-    // Determine whether width or height should be 100%
-    if ((win_w / win_h) < ($bg.width() / $bg.height())) {
-      $bg.css({height: '100%', width: 'auto'});
-    } else {
-      $bg.css({width: '100%', height: 'auto'});
-    }
-    
-  }).resize();
-  
-})(jQuery);
-*/
+    for (var i = 0; i < length; i++) {
+      for (var j = 0; j < json[i].length; j++) {
+        tempArray.push(new google.maps.LatLng(json[i][j].k, json[i][j].A));
+      };
+      var flightPath=new google.maps.Polygon({
+        path:tempArray,
+        strokeColor:"#0000FF",
+        strokeOpacity:0.8,
+        strokeWeight:2,
+        fillColor:"#0000FF",
+        fillOpacity:0.4
+      });
+      flightPath.setMap(map);
+      tempArray = [];
+    };
+  });
+}
