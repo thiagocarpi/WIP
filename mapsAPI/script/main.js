@@ -35,7 +35,6 @@ window.onload = function() {
     mapOptions);
 
  area = new Area( map );
-  console.log(area.getInfo());
   /*drawAreas();
 
   var geodesicOptions = {

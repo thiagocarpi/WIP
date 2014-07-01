@@ -4,6 +4,7 @@ var strokeColor = "";
 var points = [];
 
 var editable = false;
+var creating = false;
 
 var count = 0; 
 var mapLocal;
@@ -23,8 +24,15 @@ function Area (mapB) {
 Area.prototype.getInfo = function() {
     return color + ' ' + id + ' area';
 };
-Area.prototype.draw = function(){
+function draw(){
+	creating = false;
+	points = [];
+	for (var i = 0; i < circles.length; i++) {
+		var circ = circles[i];
+		points.push(circ.getCenter());
+	};
 	points.push(points[0]);
+	console.log("points"+ points);
 	console.log(circles);
 	lineLocal = new google.maps.Polygon({
 		path: points,
@@ -52,10 +60,10 @@ Area.prototype.draw = function(){
 Area.prototype.addPoint = function(x, y){
 	console.log(x+ " | "+ y);
     var populationOptions = {
-      strokeColor: '#FF0000',
+      strokeColor: (count == 0) ? '#00FF00' : '#FF0000',
       strokeOpacity: 0.8,
       strokeWeight: 1,
-      fillColor: '#FF0000',
+      fillColor: (count == 0) ? '#00FF00' : '#FF0000',
       fillOpacity: 0.35,
       map: mapLocal,
       center: new google.maps.LatLng(x,y),
@@ -63,19 +71,28 @@ Area.prototype.addPoint = function(x, y){
       clickable: (count == 0) ? true : false,
       draggable: false
     };
-    points.push(new google.maps.LatLng(x,y));
+    //points.push(new google.maps.LatLng(x,y));
     cityCircle = new google.maps.Circle(populationOptions);
     circles.push(cityCircle);
     if(count==0){
-      listenerHandle = google.maps.event.addListener(cityCircle, 'mousedown', this.draw);
+      listenerHandle = google.maps.event.addListener(cityCircle, 'mousedown', draw);
     }
+    creating = true;
     count++;
 }
 function edit() {
 	console.log("iniciando edição"+editable);
 	if(editable){
+		lineLocal.setMap(null);
 		for (var i = 0; i < circles.length; i++) {
-			circles[i].setOptions({fillOpacity: 0.5, clickable:true, strokeOpacity:0.5, draggable: true});
+			console.log(circles[i]);
+			if(i==0){
+				circles[i].setOptions({clickable: true, fillColor: '#00FF00',fillOpacity: 1, clickable:true, strokeOpacity:0.5, draggable: true});
+				var circ = circles[i];
+		      listenerHandle = google.maps.event.addListener(circ, 'mouseup', draw);
+		    }else{
+				circles[i].setOptions({fillOpacity: 0.5, clickable:true, strokeOpacity:0.5, draggable: true});
+			}
 		}
 	}
 };
