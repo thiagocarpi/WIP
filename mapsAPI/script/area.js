@@ -39,11 +39,10 @@ Area.prototype.draw = function(){
 		'area':points
 	};
 	lineLocal.objInfo = obj;
-	//lineLocal.setMap(mapLocal);
+	lineLocal.setMap(mapLocal);
 	var first = circles[0];
 	for (var i = 0; i < circles.length; i++) {
-		circles[i].clickable = false;
-		circles[i].fillOpacity = 0.0;
+		circles[i].setOptions({fillOpacity: 0, clickable:false, strokeOpacity:0});
 	}
 	google.maps.event.removeListener(listenerHandle);
 
