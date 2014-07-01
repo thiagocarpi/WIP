@@ -35,7 +35,6 @@ window.onload = function() {
     mapOptions);
 
  area = new Area( map );
-  console.log("area");
   console.log(area.getInfo());
   /*drawAreas();
 
@@ -58,7 +57,7 @@ function addLocation(event) {
   var y = event.latLng.lng();  
 
   
-  area.addPoint(x,y,true);
+  area.addPoint(x,y);
   /*if(points.length > 0 && drawing){
     console.log("new point");
     addPoint(x, y, false);
@@ -81,56 +80,7 @@ function moveLocation(event){
     //console.log(path.getAt(pathSize - 1).lat());
   }
 }
-function initClick(event){
-  drawing = false;
-  pos.push(pos[0]);
-  line = new google.maps.Polygon({
-    path: pos,
-    strokeColor: '#FF0000',
-    strokeOpacity: 1.0,
-    strokeWeight: 2,
-    fillColor: '#FF0000',
-    fillOpacity: 0.35
-  });
-  var obj = {
-    'id':0,
-    'area':pos
-  };
-  line.objInfo = obj;
-  line.setMap(map);
-  //save data to file
-  data = pos;
-  console.log( JSON.stringify(data));
-  pos = [];
-  google.maps.event.addListener(line, 'mousedown', lineClick);
 
-  //console.log( " inicial" + " | " + pos);
-}
-function lineClick(event){
-  this.setOptions({fillColor:'#00ff00'});
-  console.log(this);
-}
-function addPoint(x, y, click){
-  if(drawing){
-    var populationOptions = {
-      strokeColor: '#FF0000',
-      strokeOpacity: 0.8,
-      strokeWeight: 1,
-      fillColor: '#FF0000',
-      fillOpacity: 0.35,
-      map: map,
-      center: new google.maps.LatLng(x,y),
-      radius: 5,
-      clickable: (click) ? true : false
-    };
-    points.push([x,y]);
-    pos.push(new google.maps.LatLng(x,y));
-    cityCircle = new google.maps.Circle(populationOptions);
-    if(click){
-      google.maps.event.addListener(cityCircle, 'mousedown', initClick);
-    }
-  }
-}
 function hitStart(startX, startY, pX, pY, r){
   console.log ( Math.sqrt((pX-startX)*(pX-startX) + (pY-startY)*(pY-startY)) +  " | "+ r/100000 )
   return Math.sqrt((pX-startX)*(pX-startX) + (pY-startY)*(pY-startY)) > r/100 ;

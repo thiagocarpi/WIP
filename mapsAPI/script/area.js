@@ -40,12 +40,14 @@ Area.prototype.draw = function(){
 	};
 	lineLocal.objInfo = obj;
 	lineLocal.setMap(mapLocal);
-	var first = circles[0];
 	for (var i = 0; i < circles.length; i++) {
 		circles[i].setOptions({fillOpacity: 0, clickable:false, strokeOpacity:0});
 	}
 	google.maps.event.removeListener(listenerHandle);
-
+	google.maps.event.addListener(lineLocal, 'mousedown', function () {
+		this.editable = true;
+		edit();
+	});
 }
 Area.prototype.addPoint = function(x, y){
 	console.log(x+ " | "+ y);
@@ -68,3 +70,10 @@ Area.prototype.addPoint = function(x, y){
     }
     count++;
 }
+Area.prototype.edit = function() {
+	if(editable){
+		for (var i = 0; i < circles.length; i++) {
+			circles[i].setOptions({fillOpacity: 0.5, clickable:true, strokeOpacity:0.5});
+		}
+	}
+};
