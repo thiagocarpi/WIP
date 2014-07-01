@@ -14,6 +14,14 @@ var drawing = false;
 var points = [];
 var pos = [];
 var data = [];
+
+
+
+var area;
+
+
+
+
 window.onload = function() {
   var mapOptions = {
     center: new google.maps.LatLng(-23.9549937, -46.3446748),
@@ -26,7 +34,10 @@ window.onload = function() {
   map = new google.maps.Map(document.getElementById("map_canvas"),
     mapOptions);
 
-  drawAreas();
+ area = new Area( map );
+  console.log("area");
+  console.log(area.getInfo());
+  /*drawAreas();
 
   var geodesicOptions = {
     strokeColor: '#ff0000',
@@ -36,7 +47,7 @@ window.onload = function() {
   }
   geodesic = new google.maps.Polyline(geodesicOptions);
   geodesic.setMap(map);
-
+*/
   // Add a listener for the click event
   google.maps.event.addListener(map, 'mousedown', addLocation);
   google.maps.event.addListener(map, 'mousemove', moveLocation);
@@ -45,14 +56,17 @@ window.onload = function() {
 function addLocation(event) {
   var x = event.latLng.lat();
   var y = event.latLng.lng();  
-  if(points.length > 0 && drawing){
+
+  
+  area.addPoint(x,y,true);
+  /*if(points.length > 0 && drawing){
     console.log("new point");
     addPoint(x, y, false);
   }else{
     console.log("first point");
     drawing = true;
     addPoint(x, y, true);
-  }
+  }*/
 }
 
 function moveLocation(event){
