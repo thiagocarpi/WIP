@@ -4,10 +4,16 @@ var strokeColor = "";
 var points = [];
 
 var editable = false;
-var first = false;
 
 var count = 0; 
 var mapLocal;
+var lineLocal;
+var circles=[];
+
+
+var listenerHandle
+
+
 function Area (mapB) {
     id = "0";
     color = "red";
@@ -19,8 +25,8 @@ Area.prototype.getInfo = function() {
 };
 Area.prototype.draw = function(){
 	points.push(points[0]);
-	console.log(points);
-	line = new google.maps.Polygon({
+	console.log(circles);
+	lineLocal = new google.maps.Polygon({
 		path: points,
 		strokeColor: '#FF0000',
 		strokeOpacity: 1.0,
@@ -32,8 +38,15 @@ Area.prototype.draw = function(){
 		'id':0,
 		'area':points
 	};
-	line.objInfo = obj;
-	line.setMap(mapLocal);
+	lineLocal.objInfo = obj;
+	//lineLocal.setMap(mapLocal);
+	var first = circles[0];
+	for (var i = 0; i < circles.length; i++) {
+		circles[i].clickable = false;
+		circles[i].fillOpacity = 0.0;
+	}
+	google.maps.event.removeListener(listenerHandle);
+
 }
 Area.prototype.addPoint = function(x, y){
 	console.log(x+ " | "+ y);
@@ -50,9 +63,9 @@ Area.prototype.addPoint = function(x, y){
     };
     points.push(new google.maps.LatLng(x,y));
     cityCircle = new google.maps.Circle(populationOptions);
-
+    circles.push(cityCircle);
     if(count==0){
-      google.maps.event.addListener(cityCircle, 'mousedown', this.draw);
+      listenerHandle = google.maps.event.addListener(cityCircle, 'mousedown', this.draw);
     }
     count++;
 }
