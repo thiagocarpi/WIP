@@ -45,7 +45,7 @@ Area.prototype.draw = function(){
 	}
 	google.maps.event.removeListener(listenerHandle);
 	google.maps.event.addListener(lineLocal, 'mousedown', function () {
-		this.editable = true;
+		editable = true;
 		edit();
 	});
 }
@@ -70,7 +70,8 @@ Area.prototype.addPoint = function(x, y){
     }
     count++;
 }
-Area.prototype.edit = function() {
+function edit() {
+	console.log("iniciando edição"+editable);
 	if(editable){
 		for (var i = 0; i < circles.length; i++) {
 			circles[i].setOptions({fillOpacity: 0.5, clickable:true, strokeOpacity:0.5});
