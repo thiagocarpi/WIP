@@ -60,7 +60,8 @@ Area.prototype.addPoint = function(x, y){
       map: mapLocal,
       center: new google.maps.LatLng(x,y),
       radius: 5,
-      clickable: (count == 0) ? true : false
+      clickable: (count == 0) ? true : false,
+      draggable: false
     };
     points.push(new google.maps.LatLng(x,y));
     cityCircle = new google.maps.Circle(populationOptions);
@@ -74,7 +75,7 @@ function edit() {
 	console.log("iniciando edição"+editable);
 	if(editable){
 		for (var i = 0; i < circles.length; i++) {
-			circles[i].setOptions({fillOpacity: 0.5, clickable:true, strokeOpacity:0.5});
+			circles[i].setOptions({fillOpacity: 0.5, clickable:true, strokeOpacity:0.5, draggable: true});
 		}
 	}
 };
