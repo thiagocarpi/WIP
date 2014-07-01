@@ -18,10 +18,14 @@ window.onload = function() {
   var mapOptions = {
     center: new google.maps.LatLng(-23.9549937, -46.3446748),
     zoom: 14,
+    disableDefaultUI: true,
+    maxZoom: 17,
+    minZoom: 13,
     mapTypeId: google.maps.MapTypeId.ROADMAP
   };
   map = new google.maps.Map(document.getElementById("map_canvas"),
     mapOptions);
+
   drawAreas();
 
   var geodesicOptions = {
@@ -90,7 +94,7 @@ function initClick(event){
 }
 function lineClick(event){
   this.setOptions({fillColor:'#00ff00'});
-  console.log(this.objInfo);
+  console.log(this);
 }
 function addPoint(x, y, click){
   if(drawing){
@@ -118,22 +122,15 @@ function hitStart(startX, startY, pX, pY, r){
   return Math.sqrt((pX-startX)*(pX-startX) + (pY-startY)*(pY-startY)) > r/100 ;
 }
 function zoomOUT(){
-  console.log(stage.getScale().x);
-  var scale = stage.getScale().x - 0.1;
-  stage.setScale(scale);
-  stage.draw();
+
 }
 function zoomIN(){
- console.log(stage.getScale().x);
- var scale = stage.getScale().x + 0.1;
- stage.setScale(scale);
- stage.draw();
+
 }
 
 function drawAreas(){
   console.log("inicio");
   var json = $.getJSON("data.json", function(json){
-    console.log(json.length);
     var tempArray = [];
     var length = 0;
     for(var k in json) if(json.hasOwnProperty(k)) length++;
