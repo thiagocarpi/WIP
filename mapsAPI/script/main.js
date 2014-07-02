@@ -33,7 +33,24 @@ window.onload = function() {
   };
   map = new google.maps.Map(document.getElementById("map_canvas"),
     mapOptions);
+   var json = $.getJSON("data.json", function(json){
+    var tempArray = [];
+    var length = 0;
+    for(var k in json) if(json.hasOwnProperty(k)) length++;
 
+     var newArea;
+    for (var i = 0; i < length; i++) {
+      console.log( json[i]);
+      var str = "A"+i.toString();
+      newArea = new Area(map, str);
+      for (var j = 0; j < json[i].length; j++) {
+        //console.log(i+ " | " + j);
+        newArea.addPoint(json[i][j].k, json[i][j].A);
+      }
+      newArea.Draw();
+      console.log(newArea.getInfo());
+    }
+      });
  area = new Area( map );
   /*drawAreas();
 

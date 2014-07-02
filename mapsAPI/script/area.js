@@ -15,8 +15,9 @@ var circles=[];
 var listenerHandle
 
 
-function Area (mapB) {
-    id = "0";
+function Area (mapB, idB) {
+    id = idB;
+    points = new Array();
     color = "red";
     strokeColor = "#ff0000";
     mapLocal = mapB;
@@ -24,6 +25,7 @@ function Area (mapB) {
 Area.prototype.getInfo = function() {
     return color + ' ' + id + ' area';
 };
+Area.prototype.Draw = draw;
 function draw(){
 	creating = false;
 	points = [];
@@ -33,7 +35,7 @@ function draw(){
 	};
 	points.push(points[0]);
 	console.log("points"+ points);
-	console.log(circles);
+	//console.log(circles);
 	lineLocal = new google.maps.Polygon({
 		path: points,
 		strokeColor: '#FF0000',
@@ -58,7 +60,7 @@ function draw(){
 	});
 }
 Area.prototype.addPoint = function(x, y){
-	console.log(x+ " | "+ y);
+	console.log("add Point" + x+ " | "+ y);
     var populationOptions = {
       strokeColor: (count == 0) ? '#00FF00' : '#FF0000',
       strokeOpacity: 0.8,
@@ -81,11 +83,11 @@ Area.prototype.addPoint = function(x, y){
     count++;
 }
 function edit() {
-	console.log("iniciando edição"+editable);
+	//console.log("iniciando edição"+editable);
 	if(editable){
 		lineLocal.setMap(null);
 		for (var i = 0; i < circles.length; i++) {
-			console.log(circles[i]);
+			//console.log(circles[i]);
 			if(i==0){
 				circles[i].setOptions({clickable: true, fillColor: '#00FF00',fillOpacity: 1, clickable:true, strokeOpacity:0.5, draggable: true});
 				var circ = circles[i];
