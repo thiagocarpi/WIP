@@ -1,42 +1,48 @@
-var id= "";
-var color = "";
-var strokeColor = "";
-var points;
+Area.prototype.id= "";
+Area.prototype.color = "";
+Area.prototype.strokeColor = "";
+//var points;
 
-var editable = false;
-var creating = false;
+Area.prototype.editable = false;
+Area.prototype.creating = false;
 
-var count = 0; 
-var mapLocal;
-var lineLocal;
-var circles=[];
+Area.prototype.count = 0; 
+Area.prototype.mapLocal;
+Area.prototype.lineLocal;
+Area.prototype.circles=[];
 
 
-var listenerHandle
+Area.prototype.listenerHandle
 
 
 function Area (mapB, idB) {
-    id = idB;
-    points = new Array();
-    color = "red";
-    strokeColor = "#ff0000";
-    mapLocal = mapB;
+    this.id = idB;
+     this.points = new Array();
+     this.circles=[];
+    //this.lineLocal = google.maps.Polygon();
+     this.color = "red";
+     this.strokeColor = "#ff0000";
+     this.mapLocal = mapB;
 }
 Area.prototype.getInfo = function() {
-    return color + ' ' + id + ' area';
+    return  this.color + ' ' +  this.id + ' area';
 };
 Area.prototype.Draw = draw;
 function draw(){
-	creating = false;
-	points = [];
-	for (var i = 0; i < circles.length; i++) {
-		var circ = circles[i];
+	 this.creating = false;
+	var points = new Array();
+	for (var i = 0; i <  this.circles.length; i++) {
+		var circ =  this.circles[i];
 		points.push(circ.getCenter());
 	};
-	points.push(points[0]);
-	console.log("points"+ points);
+	if(points[0].equals(points[points.length-1])){
+		//console.log("igual");
+		points.push(points[0]);
+	}
+	
+	//console.log("points"+ circles);
 	//console.log(circles);
-	lineLocal = new google.maps.Polygon({
+	this.lineLocal = new google.maps.Polygon({
 		path: points,
 		strokeColor: '#FF0000',
 		strokeOpacity: 1.0,
@@ -45,55 +51,56 @@ function draw(){
 		fillOpacity: 0.35
 	});
 	var obj = {
-		'id':0,
+		'id': this.id,
 		'area':points
 	};
-	lineLocal.objInfo = obj;
-	lineLocal.setMap(mapLocal);
-	for (var i = 0; i < circles.length; i++) {
-		circles[i].setOptions({fillOpacity: 0, clickable:false, strokeOpacity:0});
+	this.lineLocal.objInfo = obj;
+	this.lineLocal.setMap( this.mapLocal);
+	for (var i = 0; i <  this.circles.length; i++) {
+		 this.circles[i].setOptions({fillOpacity: 0, clickable:false, strokeOpacity:0});
 	}
-	google.maps.event.removeListener(listenerHandle);
-	google.maps.event.addListener(lineLocal, 'mousedown', function () {
-		editable = true;
+	google.maps.event.removeListener( this.listenerHandle);
+	google.maps.event.addListener(this.lineLocal, 'mousedown', function () {
+		console.log( this.id);
+		 this.editable = true;
 		edit();
 	});
 }
 Area.prototype.addPoint = function(x, y){
-	console.log("add Point" + x+ " | "+ y);
+	//console.log("add Point" + x+ " | "+ y);
     var populationOptions = {
-      strokeColor: (count == 0) ? '#00FF00' : '#FF0000',
+      strokeColor: ( this.count == 0) ? '#00FF00' : '#FF0000',
       strokeOpacity: 0.8,
       strokeWeight: 1,
-      fillColor: (count == 0) ? '#00FF00' : '#FF0000',
+      fillColor: ( this.count == 0) ? '#00FF00' : '#FF0000',
       fillOpacity: 0.35,
-      map: mapLocal,
+      map:  this.mapLocal,
       center: new google.maps.LatLng(x,y),
       radius: 5,
-      clickable: (count == 0) ? true : false,
+      clickable: ( this.count == 0) ? true : false,
       draggable: false
     };
     //points.push(new google.maps.LatLng(x,y));
     cityCircle = new google.maps.Circle(populationOptions);
-    circles.push(cityCircle);
-    if(count==0){
-      listenerHandle = google.maps.event.addListener(cityCircle, 'mousedown', draw);
+     this.circles.push(cityCircle);
+    if( this.count==0){
+       this.listenerHandle = google.maps.event.addListener(cityCircle, 'mousedown',  this.draw);
     }
-    creating = true;
-    count++;
+     this.creating = true;
+     this.count++;
 }
 function edit() {
 	//console.log("iniciando edição"+editable);
 	if(editable){
-		lineLocal.setMap(null);
+		this.lineLocal.setMap(null);
 		for (var i = 0; i < circles.length; i++) {
 			//console.log(circles[i]);
 			if(i==0){
-				circles[i].setOptions({clickable: true, fillColor: '#00FF00',fillOpacity: 1, clickable:true, strokeOpacity:0.5, draggable: true});
-				var circ = circles[i];
-		      listenerHandle = google.maps.event.addListener(circ, 'mouseup', draw);
+				 this.circles[i].setOptions({clickable: true, fillColor: '#00FF00',fillOpacity: 1, clickable:true, strokeOpacity:0.5, draggable: true});
+				var circ =  this.circles[i];
+		       this.listenerHandle = google.maps.event.addListener(circ, 'mouseup',  this.draw);
 		    }else{
-				circles[i].setOptions({fillOpacity: 0.5, clickable:true, strokeOpacity:0.5, draggable: true});
+				 this.circles[i].setOptions({fillOpacity: 0.5, clickable:true, strokeOpacity:0.5, draggable: true});
 			}
 		}
 	}

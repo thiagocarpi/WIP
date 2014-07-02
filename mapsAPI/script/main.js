@@ -39,7 +39,7 @@ window.onload = function() {
     for(var k in json) if(json.hasOwnProperty(k)) length++;
 
     for (var i = 0; i < length; i++) {
-      console.log( json[i]);
+      //console.log( json[i]);
       var str = "A"+i.toString();
       var newArea = new Area(map, str);
       for (var j = 0; j < json[i].length; j++) {
