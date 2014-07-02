@@ -1,7 +1,7 @@
 var id= "";
 var color = "";
 var strokeColor = "";
-var points = [];
+var points;
 
 var editable = false;
 var creating = false;
