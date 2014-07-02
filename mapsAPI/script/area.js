@@ -60,10 +60,10 @@ function draw(){
 		 this.circles[i].setOptions({fillOpacity: 0, clickable:false, strokeOpacity:0});
 	}
 	google.maps.event.removeListener( this.listenerHandle);
-	google.maps.event.addListener(this.lineLocal, 'mousedown', function () {
-		console.log( this.id);
-		 this.editable = true;
-		edit();
+	google.maps.event.addListener(this.lineLocal, 'mousedown', function (event) {
+		console.log( event);
+		 //this.editable = true;
+		//edit();
 	});
 }
 Area.prototype.addPoint = function(x, y){

@@ -63,8 +63,8 @@ window.onload = function() {
   geodesic.setMap(map);
 */
   // Add a listener for the click event
-  google.maps.event.addListener(map, 'mousedown', addLocation);
-  google.maps.event.addListener(map, 'mousemove', moveLocation);
+  //google.maps.event.addListener(map, 'mousedown', addLocation);
+  //google.maps.event.addListener(map, 'mousemove', moveLocation);
 };
 
 function addLocation(event) {
