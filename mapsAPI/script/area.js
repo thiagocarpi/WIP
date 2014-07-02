@@ -48,7 +48,8 @@ function draw(){
 		strokeOpacity: 1.0,
 		strokeWeight: 2,
 		fillColor: '#FF0000',
-		fillOpacity: 0.35
+		fillOpacity: 0.35,
+		clickable: true
 	});
 	var obj = {
 		'id': this.id,
@@ -60,11 +61,11 @@ function draw(){
 		 this.circles[i].setOptions({fillOpacity: 0, clickable:false, strokeOpacity:0});
 	}
 	google.maps.event.removeListener( this.listenerHandle);
-	google.maps.event.addListener(this.lineLocal, 'mousedown', function (event) {
-		console.log( event);
+	//google.maps.event.addListener(this.lineLocal, 'mousedown', function (event) {
+	//	console.log( event); 
 		 //this.editable = true;
 		//edit();
-	});
+	//});
 }
 Area.prototype.addPoint = function(x, y){
 	//console.log("add Point" + x+ " | "+ y);
